@@ -18,5 +18,8 @@ jobs:
         with:
           dotnet-version: '6.0.404'
 
+      - name: Source / Reload the Profile
+        run: source ~/.profile
+        
       - name: Verify the Dotnet Version
         run: dotnet --version
