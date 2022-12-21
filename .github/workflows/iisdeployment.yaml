@@ -6,8 +6,8 @@ on:
       - master
 
 jobs:
-  buildhahahahhahah:
-    name: Build the 
+  build:
+    name: Build Riyadbank Website
     runs-on: ubuntu-latest
     steps:
       - name: Download the Source Code
@@ -19,7 +19,10 @@ jobs:
           dotnet-version: '6.0.404'
 
       - name: Source / Reload the Profile
-        run: source ~/.profile
-        
+        run: |
+          export PATH="$PATH:$HOME/.dotnet"
+          source ~/.profile
+          source ~/.bashrc
+
       - name: Verify the Dotnet Version
         run: dotnet --version
