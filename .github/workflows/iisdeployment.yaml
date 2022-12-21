@@ -8,7 +8,7 @@ on:
 jobs:
   build:
     name: Build Riyadbank Website
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-18.04
     steps:
       - name: Download the Source Code
         uses: actions/checkout@v3
@@ -18,11 +18,29 @@ jobs:
         with:
           dotnet-version: '6'
 
-      # - name: Source / Reload the Profile
-      #   run: |
-      #     export PATH="$PATH:$HOME/.dotnet"
-      #     source ~/.profile
-      #     source ~/.bashrc
-
       - name: Verify the Dotnet Version
         run: dotnet --version
+
+      - name: Build the Application
+        run: dotnet build --configuration Release
+
+      - name: Publish the package as public folder
+        run: dotnet publish -c Release -o public
+
+      - name: Zip the Public folder as public.zip
+        run: zip -r public.zip public/
+      
+      - name: Check the Public Zip File
+        run: ls -l public.zip
+
+      - name: Copy the Public Folder to Ubuntu
+        uses: marcodallasanta/ssh-scp-deploy@v1.2.0
+        with:
+          local: 'public/*'
+          remote: 'public/'
+          host: ${{secrets.HOST}}
+          user: ${{secrets.USER}}
+          password: ${{secrets.PASSWORD}}
+          ssh_options: -o StrictHostKeyChecking=no
+          pre_upload: rmdir /s /q public
+          post_upload: iisreset /stop && xcopy /s /y public C:\inetpub\wwwroot\ && iisreset /start
