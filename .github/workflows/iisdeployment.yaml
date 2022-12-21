@@ -1,6 +1,7 @@
 name: IIS Deployment of Riyadbank Application
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - master
